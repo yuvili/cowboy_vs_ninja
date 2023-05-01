@@ -26,5 +26,6 @@ class Character{
         string getName();
         Point getLocation();
         string Print();
+        int getHitPoints();
 };
 #endif

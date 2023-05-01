@@ -4,7 +4,7 @@ template <typename T>
 void Cowboy::shoot(T){
 
 }
-bool Cowboy::hasboolets(){
+bool Cowboy::hasBullets(){
 
 }
 void Cowboy::reload(){

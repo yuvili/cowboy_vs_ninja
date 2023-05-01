@@ -14,7 +14,7 @@ using namespace std;
 
 namespace ariel{
 class Team{
-    private:
+    protected:
         Character leader;
         std::vector<Character*> members;
 
@@ -30,6 +30,7 @@ class Team{
         void attack(Team*);
         int stillAlive();
         void Print();
+        Character& getLeader();
 };
 };
 #endif
