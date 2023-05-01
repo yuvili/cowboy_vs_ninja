@@ -18,3 +18,18 @@ TEST_CASE("Point object initialization & Getters return expected values") {
     CHECK(((p.getX() == 1) && (p.getY() == 2)));
 }
 
+TEST_CASE("Point distance calculation") {
+    Point p1(0.0, 0.0);
+    Point p2(3.0, 4.0);
+
+    SUBCASE("Distance between two points"){
+        double distance = p1.distance(p2);
+        CHECK(distance == doctest::Approx(5.0));
+        CHECK(distance == p2.distance(p1));
+    }
+
+    SUBCASE("Distance to itself"){
+        double distance = p1.distance(p1);
+        CHECK(distance == doctest::Approx(0.0));
+    }
+}
