@@ -10,11 +10,7 @@ using namespace std;
 TEST_CASE("Point object initialization & Getters return expected values") {
     Point p(1, 2);
 
-<<<<<<< HEAD
-    SUBCASE("Check that the type of X and Y are double") {
-=======
-    SUBCASE("Check that the type of X and Y are double"{
->>>>>>> 3aa7749eed889711a037549f8fae00487ef053c5
+    SUBCASE("Check that the type of X and Y are double"){
         CHECK(typeid(p.getX()).name() == typeid(double).name());
         CHECK(typeid(p.getY()).name() == typeid(double).name());
     }
@@ -29,27 +25,6 @@ TEST_CASE("Point object initialization & Getters return expected values") {
         CHECK(p2.getX() == doctest::Approx(3.14));
         CHECK(p2.getY() == doctest::Approx(2.71));
     }
-<<<<<<< HEAD
-=======
-}
-
-TEST_CASE("Point moveTowards calculation") {
-    Point p1(0.0, 0.0);
-    Point p2(3.0, 4.0);
-    Point target(5.0, 5.0);
-
-    SUBCASE("Move towards target point") {
-        Point& movedPoint = p1.moveTowards(p2, target, 2.0);
-        CHECK(movedPoint.getX() == doctest::Approx(1.0));
-        CHECK(movedPoint.getY() == doctest::Approx(1.0));
-    }
-
-    SUBCASE("Move towards target point when already at or beyond the target") {
-        Point& movedPoint = p2.moveTowards(p1, target, 2.0);
-        CHECK(movedPoint.getX() == doctest::Approx(3.0));
-        CHECK(movedPoint.getY() == doctest::Approx(4.0));
-    }
->>>>>>> 3aa7749eed889711a037549f8fae00487ef053c5
 }
 
 TEST_CASE("Point moveTowards calculation") {

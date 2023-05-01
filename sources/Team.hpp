@@ -2,6 +2,7 @@
 #define TEAM_HPP
 #include <vector>
 #include <type_traits>
+#include "Point.hpp"
 #include "Character.hpp"
 #include "Cowboy.hpp"
 #include "Ninja.hpp"

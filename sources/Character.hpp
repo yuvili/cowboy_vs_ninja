@@ -16,13 +16,13 @@ class Character{
 
         // Variables
         Point possition;
-        int hit_points;;
+        int hit_points;
         string name;
 
         // Functions
-        bool isAlive();
+        bool isAlive(); // Returns true if hit_points > 0
         double distance(Character*);
-        void hit(int damage);
+        void hit(int damage); // Subtracts the damge value from hit_points
         string getName();
         Point getLocation();
         string Print();
