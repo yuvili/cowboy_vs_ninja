@@ -3,14 +3,14 @@
 
 class Point{
     private:
-        double x, y;
+        double _x, _y;
     
     public:
-        Point(){}
-        Point(double, double){}// check overflow of double? when reciev float??
-        ~Point(){} // Destructor
-        Point(const Point& other){} // Copy constructor
-        Point(Point&& other) noexcept{} // Move constructor
+        Point();
+        Point(double, double);
+        ~Point(); // Destructor
+        Point(const Point& other); // Copy constructor
+        Point(Point&& other) noexcept; // Move constructor
 
         double distance(Point&);
         void print();

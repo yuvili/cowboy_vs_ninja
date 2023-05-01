@@ -15,9 +15,9 @@ class Character{
         Character(Character&& other) noexcept; // Move constructor
 
         // Variables
-        Point possition;
+        Point _possition;
         int hit_points;
-        string name;
+        string _name;
 
         // Functions
         bool isAlive(); // Returns true if hit_points > 0

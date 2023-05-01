@@ -10,11 +10,11 @@ class Cowboy : public Character {
 
     public:
         // Constructors
-        Cowboy(){}
-        Cowboy(const string&, Point){}
-        Cowboy(const Cowboy& character){}
-        Cowboy(Character* character){}
-        Cowboy* operator->() {return this;}
+        Cowboy();
+        Cowboy(const string&, Point);
+        Cowboy(const Cowboy& character);
+        Cowboy(Character* character);
+        Cowboy* operator->();
 
         // Functions
         template <typename T>

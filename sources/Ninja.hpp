@@ -6,16 +6,16 @@ using namespace std;
 
 class Ninja : public Character {
     protected:
-        int speed;
+        int _speed;
 
     public:
         // Constructors
-        Ninja(){}
-        Ninja(const string&, Point&){}
-        Ninja(const string&, Point&, int, int){}
-        Ninja(const Ninja& character){}
-        Ninja(Character* character){}
-        Ninja* operator->() {return this;}
+        Ninja();
+        Ninja(const string&, Point&);
+        Ninja(const string&, Point&, int, int);
+        Ninja(const Ninja& character);
+        Ninja(Character* character);
+        Ninja* operator->();
 
         // Functions
         template <typename T>
