@@ -15,22 +15,23 @@ using namespace std;
 namespace ariel{
 class Team{
     protected:
-        Character leader;
+        Character* leader;
         std::vector<Character*> members;
 
+        void chooseLeader();
+        Character* getTarget(Team* enemy);
+
     public:
-        Team(){}
-        template <typename T>
-        Team(T leader){}
-        ~Team(){} // Destructor
-        Team(const Team& other){} // Copy constructor
-        Team(Team&& other) noexcept{} // Move constructor
+        Team(Character* leader);
+        ~Team(); // Destructor
+        Team(const Team& other); // Copy constructor
+        Team(Team&& other) noexcept; // Move constructor
 
         void add(Character*);
         void attack(Team*);
         int stillAlive();
-        void Print();
-        Character& getLeader();
+        void print();
+        Character getLeader();
 };
 };
 #endif

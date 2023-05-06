@@ -4,6 +4,7 @@
 #include "Character.hpp"
 using namespace std;
 
+
 class Ninja : public Character {
     protected:
         int _speed;
@@ -11,16 +12,16 @@ class Ninja : public Character {
     public:
         // Constructors
         Ninja();
-        Ninja(const string&, Point&);
+       
+        Ninja(string, Point);
         Ninja(const string&, Point&, int, int);
         Ninja(const Ninja& character);
         Ninja(Character* character);
         Ninja* operator->();
 
         // Functions
-        template <typename T>
-        void move(T);
-        template <typename T>
-        void slash(T);
+        void move(Character *enemy);
+        void slash(Character *enemy);
+        string print();
 };
 #endif

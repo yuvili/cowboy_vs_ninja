@@ -12,9 +12,11 @@ class Point{
         Point(const Point& other); // Copy constructor
         Point(Point&& other) noexcept; // Move constructor
 
+        Point& operator=(const Point&);
+
         double distance(Point&);
         void print();
-        Point& moveTowards(Point&, Point&, double);
+        Point moveTowards(Point&, Point&, double);
         double getX();
         double getY();
 };

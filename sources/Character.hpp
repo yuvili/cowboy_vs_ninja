@@ -8,16 +8,17 @@ class Character{
     public:
         // Constructors
         Character();
-        Character(const string&, Point&); // check overflow of double? when reciev float??
-        ~Character(); // Destructor
-        Character(const Character& other){}
-        Character(Character* other){}
+        Character(string, Point, int); // check overflow of double? when reciev float??
+        virtual ~Character(){} // Destructor
+        Character(const Character& other);
+        Character(Character* other);
         Character(Character&& other) noexcept; // Move constructor
 
         // Variables
         Point _possition;
         int hit_points;
         string _name;
+        bool inTeam;
 
         // Functions
         bool isAlive(); // Returns true if hit_points > 0
@@ -25,7 +26,8 @@ class Character{
         void hit(int damage); // Subtracts the damge value from hit_points
         string getName();
         Point getLocation();
-        string Print();
+        string print();
         int getHitPoints();
+        void setInTeam(bool);
 };
 #endif

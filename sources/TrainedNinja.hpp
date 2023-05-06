@@ -7,13 +7,11 @@ using namespace std;
 
 class TrainedNinja : public Ninja {
     public:
-        TrainedNinja(){
-            Ninja();
+        TrainedNinja() : Ninja() {
             hit_points = 120;
             _speed = 12;
         }
-        TrainedNinja(const string& name, Point possition){
-            Ninja(name, possition);
+        TrainedNinja(const string& name, Point possition) : Ninja(name, possition) {
             hit_points = 120;
             _speed = 12;
         }

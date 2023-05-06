@@ -8,7 +8,6 @@ using namespace ariel;
 
 class Team2 : protected Team {
     public:
-        void add(Character*);
         void attack(Team*);
 };
 #endif

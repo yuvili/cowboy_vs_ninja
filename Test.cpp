@@ -34,19 +34,19 @@ TEST_CASE("Point object initialization & Getters return expected values") {
 }
 
 TEST_CASE("Point moveTowards calculation") {
-    Point p1(0.0, 0.0);
+    Point p1(5.0, 0.0);
     Point p2(3.0, 4.0);
-    Point target(5.0, 5.0);
+    Point target(5.0, 4.0);
 
     SUBCASE("Move towards target point") {
-        Point& movedPoint = p1.moveTowards(p2, target, 2.0);
-        CHECK(movedPoint.getX() == doctest::Approx(1.0));
-        CHECK(movedPoint.getY() == doctest::Approx(1.0));
+        Point movedPoint = p1.moveTowards(p1, target, 2.0);
+        CHECK(movedPoint.getX() == doctest::Approx(5.0));
+        CHECK(movedPoint.getY() == doctest::Approx(2.0));
     }
 
     SUBCASE("Move towards target point when already at or beyond the target") {
-        Point& movedPoint = p2.moveTowards(p1, target, 2.0);
-        CHECK(movedPoint.getX() == doctest::Approx(3.0));
+        Point movedPoint = p2.moveTowards(p2, target, 2.0);
+        CHECK(movedPoint.getX() == doctest::Approx(5.0));
         CHECK(movedPoint.getY() == doctest::Approx(4.0));
     }
 }
@@ -69,28 +69,32 @@ TEST_CASE("Point distance calculation") {
 
 TEST_CASE("Cowboy initialization") {
     Point p(3.14, 2.71);
-    Cowboy cowboy("Hermione", p);
+    Cowboy *cowboy = new Cowboy("Hermione", p);
    
-    CHECK(cowboy.isAlive() == true);
-    CHECK(cowboy.getHitPoints() == 110);
-    CHECK(cowboy.getName() == "Hermione");
-    CHECK(cowboy.distance(&cowboy) == doctest::Approx(0.0));
-    CHECK(cowboy.getLocation().getX() == doctest::Approx(3.14));
-    CHECK(cowboy.getLocation().getY() == doctest::Approx(2.71));
+    CHECK(cowboy->isAlive() == true);
+    CHECK(cowboy->getHitPoints() == 110);
+    CHECK(cowboy->getName() == "Hermione");
+    CHECK(cowboy->distance(cowboy) == doctest::Approx(0.0));
+    CHECK(cowboy->getLocation().getX() == doctest::Approx(3.14));
+    CHECK(cowboy->getLocation().getY() == doctest::Approx(2.71));
 
     SUBCASE("Empty name") {
-        Cowboy cowboyNone("", p);
-        CHECK(cowboyNone.getName() == "");
+        Cowboy *cowboyNone = new Cowboy("", p);
+        CHECK(cowboyNone->getName() == "");
     }  
 
     SUBCASE("Full name") {
-        Cowboy cowboy2("Hermione Granger", p);
-        CHECK(cowboy2.getName() == "Hermione Granger");
+        Cowboy *cowboy2 = new Cowboy("Hermione Granger", p);
+        CHECK(cowboy2->getName() == "Hermione Granger");
     } 
 
     SUBCASE("Check Cowboy default constructor") {
         Cowboy cowboy2;
         CHECK(cowboy2.getName() == "");
+        CHECK(cowboy2->getHitPoints() == 110);
+        CHECK(cowboy2->getName() == "");
+        CHECK(cowboy2->getLocation().getX() == doctest::Approx(0));
+        CHECK(cowboy2->getLocation().getY() == doctest::Approx(0));
     }  
 }
 
@@ -105,7 +109,8 @@ TEST_CASE("Cowboy isAlive") {
     }
 
     SUBCASE("Dead cowboy") {
-        cowboy.hit(100);
+        cowboy.hit(110);
+        CHECK(cowboy.getHitPoints() == 0);
         CHECK(cowboy.isAlive() == false);
     }
 }
@@ -131,50 +136,49 @@ TEST_CASE("Cowboy hit points") {
 
     SUBCASE("Hit with negative damage") {
         cowboy.hit(-10);
-        CHECK(cowboy.getHitPoints() == 100);
+        CHECK(cowboy.getHitPoints() == 120);
     }
 
     SUBCASE("Negative hit points") {
-        Cowboy cowboy("Neville", p);
         cowboy.hit(120);
         CHECK(cowboy.isAlive() == false);
-        CHECK(cowboy.getHitPoints() == 0);
+        CHECK(cowboy.getHitPoints() == -10);
     }
 }
 
 TEST_CASE("Cowboy shoot") {
     Point p1(0.0, 0.0);
     Point p2(3.0, 4.0);
-    Cowboy cowboy1("Bellatrix", p1);
-    Cowboy cowboy2("Sirius", p2);
+    Cowboy *cowboy1 = new Cowboy("Bellatrix", p1);
+    Cowboy *cowboy2 = new Cowboy("Sirius", p2);
 
     SUBCASE("Shoot enemy with bullets left") {
-        cowboy1.shoot(cowboy2);
-        CHECK(cowboy2.getHitPoints() == 100);
-        CHECK(cowboy1.hasBullets() == true);
+        cowboy1->shoot(cowboy2);
+        CHECK(cowboy2->getHitPoints() == 100);
+        CHECK(cowboy1->hasBullets() == true);
     }
 
     SUBCASE("Shoot enemy with no bullets left") {
-        cowboy1.shoot(cowboy2);
-        cowboy1.shoot(cowboy2);
-        cowboy1.shoot(cowboy2);
-        cowboy1.shoot(cowboy2);
-        cowboy1.shoot(cowboy2);
-        CHECK(cowboy2.getHitPoints() == 50);
-        cowboy1.shoot(cowboy2);
-        CHECK(cowboy2.getHitPoints() == 50); // No damage as no bullets left
-        CHECK(cowboy1.hasBullets() == false);
+        cowboy1->shoot(cowboy2);
+        cowboy1->shoot(cowboy2);
+        cowboy1->shoot(cowboy2);
+        cowboy1->shoot(cowboy2);
+        cowboy1->shoot(cowboy2);
+        cowboy1->shoot(cowboy2);
+        CHECK(cowboy2->getHitPoints() == 50);
+        cowboy1->shoot(cowboy2);
+        CHECK(cowboy2->getHitPoints() == 50); // No damage as no bullets left
+        CHECK(cowboy1->hasBullets() == false);
     }
 
      SUBCASE("Shoot self") {
-        cowboy1.shoot(cowboy1);
-        CHECK(cowboy1.getHitPoints() == 100); // No damage as shooting self
+        cowboy1->shoot(cowboy1);
+        CHECK(cowboy1->getHitPoints() == 110); // No damage as shooting self
     }
 
     SUBCASE("Shoot null enemy") {
         Cowboy* enemy = nullptr;
-        cowboy1.shoot(enemy);
-        CHECK(cowboy1.getHitPoints() == 100); // No damage as shooting null enemy
+        CHECK_NOTHROW(cowboy1->shoot(enemy)); // No damage as shooting null enemy
     }
 }
 
@@ -184,6 +188,186 @@ TEST_CASE("Cowboy reload") {
 
     cowboy.reload();
     CHECK(cowboy.hasBullets() == true);
+}
+
+TEST_CASE("Ninja initialization") {
+    Point p(3.14, 2.71);
+    
+    YountNinja *youngNinja = new YountNinja("Hermione", p);
+    CHECK(youngNinja->isAlive() == true);
+    CHECK(youngNinja->getHitPoints() == 100);
+    CHECK(youngNinja->getName() == "Hermione");
+    CHECK(youngNinja->distance(youngNinja) == doctest::Approx(0.0));
+    CHECK(youngNinja->getLocation().getX() == doctest::Approx(3.14));
+    CHECK(youngNinja->getLocation().getY() == doctest::Approx(2.71));
+
+    TrainedNinja *trainedNinja = new TrainedNinja("Snape", p);
+    CHECK(trainedNinja->isAlive() == true);
+    CHECK(trainedNinja->getHitPoints() == 120);
+    CHECK(trainedNinja->getName() == "Snape");
+    CHECK(trainedNinja->distance(trainedNinja) == doctest::Approx(0.0));
+    CHECK(trainedNinja->getLocation().getX() == doctest::Approx(3.14));
+    CHECK(trainedNinja->getLocation().getY() == doctest::Approx(2.71));
+
+    OldNinja *oldNinja = new OldNinja("Dumbledore", p);
+    CHECK(oldNinja->isAlive() == true);
+    CHECK(oldNinja->getHitPoints() == 150);
+    CHECK(oldNinja->getName() == "Dumbledore");
+    CHECK(oldNinja->distance(oldNinja) == doctest::Approx(0.0));
+    CHECK(oldNinja->getLocation().getX() == doctest::Approx(3.14));
+    CHECK(oldNinja->getLocation().getY() == doctest::Approx(2.71));
+
+    SUBCASE("Empty name") {
+        YountNinja *youngNinjaNone = new YountNinja("", p);
+        CHECK(youngNinjaNone->getName() == "");
+
+        TrainedNinja *trainedNinjaNone = new TrainedNinja("", p);
+        CHECK(trainedNinjaNone->getName() == "");
+
+        OldNinja *oldNinjaNone = new OldNinja("", p);
+        CHECK(oldNinjaNone->getName() == "");
+    }  
+
+    SUBCASE("Full name") {
+        YountNinja *youngNinja = new YountNinja("Hermione Granger", p);
+        CHECK(youngNinja->getName() == "Hermione Granger");
+        
+        TrainedNinja *trainedNinjaNone = new TrainedNinja("Severus Snape", p);
+        CHECK(trainedNinjaNone->getName() == "Severus Snape");
+
+        OldNinja *oldNinjaNone = new OldNinja("Albus Dumbledore", p);
+        CHECK(oldNinjaNone->getName() == "Albus Dumbledore");
+    } 
+
+    SUBCASE("Check Ninja default constructor") {
+        YountNinja youngNinja;
+        CHECK(youngNinja->isAlive() == true);
+        CHECK(youngNinja->getHitPoints() == 100);
+        CHECK(youngNinja->getName() == "");
+        CHECK(youngNinja->getLocation().getX() == doctest::Approx(0));
+        CHECK(youngNinja->getLocation().getY() == doctest::Approx(0));
+        
+        TrainedNinja trainedNinja;
+        CHECK(trainedNinja->isAlive() == true);
+        CHECK(trainedNinja->getHitPoints() == 120);
+        CHECK(trainedNinja->getName() == "");
+        CHECK(trainedNinja->getLocation().getX() == doctest::Approx(0));
+        CHECK(trainedNinja->getLocation().getY() == doctest::Approx(0));
+
+        OldNinja oldNinja;
+        CHECK(oldNinja->isAlive() == true);
+        CHECK(oldNinja->getHitPoints() == 150);
+        CHECK(oldNinja->getName() == "");
+        CHECK(oldNinja->getLocation().getX() == doctest::Approx(0));
+        CHECK(oldNinja->getLocation().getY() == doctest::Approx(0));
+    }  
+}
+
+TEST_CASE("Ninja isAlive") {
+    Point p(1.0, 8.5);
+    YountNinja *youngNinja = new YountNinja("Hermione", p);
+    TrainedNinja *trainedNinja = new TrainedNinja("Snape", p);
+    OldNinja *oldNinja = new OldNinja("Dumbledore", p);
+   
+    SUBCASE("Alive ninja") {
+        youngNinja->hit(20);
+        CHECK(youngNinja->isAlive() == true);
+        CHECK(youngNinja->getHitPoints() == 80);
+
+        trainedNinja->hit(20);
+        CHECK(trainedNinja->isAlive() == true);
+        CHECK(trainedNinja->getHitPoints() == 100);
+
+        oldNinja->hit(20);
+        CHECK(oldNinja->isAlive() == true);
+        CHECK(oldNinja->getHitPoints() == 130);
+    }
+
+    SUBCASE("Dead ninja") {
+        youngNinja->hit(100);
+        CHECK_FALSE(youngNinja->isAlive());
+        CHECK(youngNinja->getHitPoints() == 0);
+
+        trainedNinja->hit(120);
+        CHECK_FALSE(trainedNinja->isAlive());
+        CHECK(trainedNinja->getHitPoints() == 0);
+
+        oldNinja->hit(150);
+        CHECK_FALSE(oldNinja->isAlive());
+        CHECK(oldNinja->getHitPoints() == 0);
+    }
+}
+
+TEST_CASE("Ninja hit points") {
+    Point p(1.0, 8.5);
+    YountNinja *youngNinja = new YountNinja("Hermione", p);
+    TrainedNinja *trainedNinja = new TrainedNinja("Snape", p);
+    OldNinja *oldNinja = new OldNinja("Dumbledore", p);
+
+    SUBCASE("Hit with negative damage") {
+        youngNinja->hit(-10);
+        CHECK(youngNinja->getHitPoints() == 110);
+
+        trainedNinja->hit(-10);
+        CHECK(trainedNinja->getHitPoints() == 130);
+
+        oldNinja->hit(-10);
+        CHECK(oldNinja->getHitPoints() == 160);
+    }
+
+    SUBCASE("Negative hit points") {
+        youngNinja->hit(110);
+        CHECK(youngNinja->getHitPoints() == -10);
+        CHECK_FALSE(youngNinja->isAlive());
+
+        trainedNinja->hit(130);
+        CHECK(trainedNinja->getHitPoints() == -10);
+        CHECK_FALSE(trainedNinja->isAlive());
+
+        oldNinja->hit(160);
+        CHECK(oldNinja->getHitPoints() == -10);
+        CHECK_FALSE(oldNinja->isAlive());
+    }
+}
+
+TEST_CASE("Ninja slash") {
+    Point p1(0.0, 0.0);
+    Point p2(0.25, 0.5);
+    Point p3(3.0, 4.0);
+    YountNinja *youngNinja = new YountNinja("Hermione", p1);
+    TrainedNinja *trainedNinja = new TrainedNinja("Snape", p2);
+    OldNinja *oldNinja = new OldNinja("Dumbledore", p3);
+
+    SUBCASE("Slash when enemy is less then 1 meter away") {
+        youngNinja->slash(trainedNinja);
+        CHECK(trainedNinja->getHitPoints() == 107);
+
+        trainedNinja->slash(youngNinja);
+        CHECK(youngNinja->getHitPoints() == 87);
+    }
+
+    SUBCASE("Slash when enemy is more then 1 meter away") {
+        youngNinja->slash(oldNinja);
+        CHECK(oldNinja->getHitPoints() == 150);
+    }
+
+     SUBCASE("Slash self") {
+        youngNinja->slash(youngNinja);
+        CHECK(youngNinja->getHitPoints() == 100); // No damage as slashing self
+
+        trainedNinja->slash(trainedNinja);
+        CHECK(trainedNinja->getHitPoints() == 120); // No damage as slashing self
+
+        oldNinja->slash(oldNinja);
+        CHECK(oldNinja->getHitPoints() == 150); // No damage as slashing self
+    }
+
+    // SUBCASE("Slash null enemy") {
+    //     OldNinja* enemy = nullptr;
+    //     CHECK_NOTHROW(youngNinja->slash(enemy)); 
+    //     CHECK_NOTHROW(trainedNinja->slash(enemy));
+    //     CHECK_NOTHROW(oldNinja->slash(enemy));
+    // }
 }
 
 TEST_CASE("Team initialization") {
@@ -214,11 +398,20 @@ TEST_CASE("Team initialization") {
     }
     
     SUBCASE("Adding too many characters"){
+        team1.add(&cowboy2);
+        team1.add(&ninja1);
+        team1.add(&ninja2);
+        team1.add(&cowboy3);
+        team1.add(&cowboy4);
+        team1.add(&ninja3);
+        team1.add(new OldNinja("Sirius", Point(7.05, 3.5)));
+        team1.add(&cowboy5);
+        team1.add(new Cowboy("George", Point(0.0, 2.125)));
         CHECK_THROWS_AS(team1.add(&ninja4), std::runtime_error);
     }
 
     SUBCASE("Get Leader"){
-        CHECK_EQ(team1.getLeader().getName(), "Harry");
+        CHECK(team1.getLeader().getName() == "Harry");
     }
 }
 
@@ -255,12 +448,8 @@ TEST_CASE("Team attack") {
         CHECK(team1.stillAlive() == 5);
         CHECK(team2.stillAlive() == 4);
 
-        CHECK(ninja22.getHitPoints() == 90); // ninja22 is the closest alive player to team1 leader 
+        CHECK(cowboy22.getHitPoints() == 90); // cowboy22 is the closest alive player to team1 leader 
 
-        team1.attack(&team2);
-        team1.attack(&team2);
-        team1.attack(&team2);
-        team1.attack(&team2);
         team1.attack(&team2);
         team1.attack(&team2);
         team1.attack(&team2);
@@ -270,16 +459,11 @@ TEST_CASE("Team attack") {
         CHECK(team1.stillAlive() == 5);
         CHECK(team2.stillAlive() == 3);
 
-        // ninja22 is the closest alive player to team1 leader 
-        CHECK(ninja22.getHitPoints() == 0);
-        CHECK_FALSE(ninja22.isAlive()); 
+        // cowboy22 is the closest alive player to team1 leader 
+        CHECK(cowboy22.getHitPoints() == 0);
+        CHECK_FALSE(cowboy22.isAlive()); 
 
         team1.attack(&team2);
-        CHECK(cowboy22.getHitPoints() == 100); // cowboy32 is the closest alive player to team1 leader 
+        CHECK(ninja12.getHitPoints() == 140); // ninja12 is the closest alive player to team1 leader 
     }
-
-    SUBCASE("Attacking the team leader") {
-    
-    }
-
 }

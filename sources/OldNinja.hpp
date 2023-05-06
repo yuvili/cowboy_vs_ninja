@@ -7,13 +7,11 @@ using namespace std;
 
 class OldNinja : public Ninja {
     public:
-        OldNinja(){
-            Ninja();
+        OldNinja() : Ninja(){
             hit_points = 150;
             _speed = 8;
         }
-        OldNinja(const string& name, Point possition){
-            Ninja(name, possition);
+        OldNinja(const string& name, Point possition) : Ninja(name, possition) {
             hit_points = 150;
             _speed = 8;
         }

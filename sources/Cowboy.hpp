@@ -11,15 +11,14 @@ class Cowboy : public Character {
     public:
         // Constructors
         Cowboy();
-        Cowboy(const string&, Point);
-        Cowboy(const Cowboy& character);
-        Cowboy(Character* character);
+        Cowboy(string, Point);
+        Cowboy(Cowboy* character);
         Cowboy* operator->();
 
         // Functions
-        template <typename T>
-        void shoot(T enamy); // If cowbow not dead and boolets_count>0 it shoot the enamy and subtract 10 hit_point from the enamy and boolets_count--
+        void shoot(Character *enemy); // If cowbow not dead and boolets_count>0 it shoot the enamy and subtract 10 hit_point from the enamy and boolets_count--
         bool hasBullets();
         void reload(); // reloads 6 new boolets
+        string print();
 };
 #endif
