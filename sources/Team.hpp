@@ -6,32 +6,32 @@
 #include "Character.hpp"
 #include "Cowboy.hpp"
 #include "Ninja.hpp"
-#include "OldNinja.hpp"
-#include "TrainedNinja.hpp"
-#include "YoungNinja.hpp"
 using namespace std;
 
 
 namespace ariel{
 class Team{
-    protected:
+    private:
         Character* leader;
         std::vector<Character*> members;
+
+    public:
+        Team(Character* leader);
+        virtual ~Team(); // Destructor
+        Team(const Team& other); // Copy constructor
+        Team(Team&& other) noexcept; // Move constructor
+
+        virtual void add(Character*);
+        void attack(Team*);
+        int stillAlive();
+        void print();
 
         void chooseLeader();
         Character* getTarget(Team* enemy);
 
-    public:
-        Team(Character* leader);
-        ~Team(); // Destructor
-        Team(const Team& other); // Copy constructor
-        Team(Team&& other) noexcept; // Move constructor
-
-        void add(Character*);
-        void attack(Team*);
-        int stillAlive();
-        void print();
-        Character getLeader();
+        // Getters
+        std::vector<Character*> getTeam() const;
+        Character* getLeader() const;
 };
 };
 #endif

@@ -10,19 +10,39 @@ using namespace std;
 #include "Team.hpp"
 
 namespace ariel {
-    Team::Team(Character* leader) : leader(leader), members(0)
+    Team::Team(Character* leader) : leader(leader)
     {
         members.push_back(leader);
         leader->setInTeam(true);
     }
 
-    Team::~Team(){} // Destructor
+    Team::~Team(){
+        //members.~vector();
+        for(std::vector<Character*>::iterator iter=members.begin(); iter != members.end(); iter++) {
+            delete *iter;
+        }
+    } 
+
+    Team::Team(const Team& other) : Team(other.leader) {
+        for(size_t i = 0; i < other.members.size(); i++) {
+            this->members.push_back(other.members[i]);
+        }
+    }
+
+    Team::Team(Team&& other) noexcept : Team(other.leader) {
+        for(size_t i = 0; i < other.members.size(); i++) {
+            this->members.push_back(other.members[i]);
+        }
+        other.leader = nullptr;
+        other.members.clear();
+    }
+
 
     void Team::add(Character* member){
         if(members.size() >= 10){
             throw std::runtime_error("Max characters in team excided.");
         }
-        if(member->inTeam){
+        if(member->getInTeam()){
             throw std::runtime_error(member->getName() + " is already in a team.");
         }
         
@@ -31,8 +51,8 @@ namespace ariel {
     }
 
     void Team::attack(Team* enemy){
-        if(enemy->stillAlive() <= 0 || this->stillAlive() <= 0) {
-            return;
+        if(enemy == this) {
+            throw std::runtime_error("Can't attack self.");
         }
 
         if (!this->leader->isAlive()) {
@@ -41,7 +61,7 @@ namespace ariel {
 
         Character* target = getTarget(enemy);
 
-        for(size_t i = 0; i < members.size(); i++) {
+        for(size_t i = 0; i < this->members.size(); i++) {
             if(enemy->stillAlive() <= 0 || this->stillAlive() <= 0) {
                 break;
             }
@@ -50,7 +70,7 @@ namespace ariel {
                 target = getTarget(enemy);
             }
 
-            Cowboy* cb = dynamic_cast<Cowboy*>(members.at(i));
+            Cowboy* cb = dynamic_cast<Cowboy*>(this->members.at(i));
 
             if(cb != nullptr && cb->isAlive()) {
                 if(cb->hasBullets()) {
@@ -62,7 +82,7 @@ namespace ariel {
             }
         }
 
-        for(size_t i = 0; i < members.size(); i++) {
+        for(size_t i = 0; i < this->members.size(); i++) {
             if(enemy->stillAlive() <= 0 || this->stillAlive() <= 0) {
                 break;
             }
@@ -71,7 +91,7 @@ namespace ariel {
                 target = getTarget(enemy);
             }
 
-            Ninja* ninja = dynamic_cast<Ninja*>(members.at(i));
+            Ninja* ninja = dynamic_cast<Ninja*>(this->members.at(i));
             
             if(ninja != nullptr && ninja->isAlive()) {
                 if(ninja->distance(target) < 1) {
@@ -95,11 +115,22 @@ namespace ariel {
     }
 
     void Team::print(){
+        cout << "Team members:" << endl;
+        for(size_t i = 0; i < members.size(); i++) {
+            Cowboy* cb = dynamic_cast<Cowboy*>(members.at(i));
+            if(cb != nullptr) {
+                cout << "   " << cb->print() << endl;
+            }
+        }
 
-    }
+        for(size_t i = 0; i < members.size(); i++) {
 
-    Character Team::getLeader() {
-        return this->leader;
+            Ninja* ninja = dynamic_cast<Ninja*>(members.at(i));
+            
+            if(ninja != nullptr) {
+                cout << "   " << ninja->print() << endl;
+            }
+        }
     }
 
     void Team::chooseLeader() {
@@ -133,5 +164,13 @@ namespace ariel {
         }
         
         return (index != -1) ? enemy->members.at(index) : nullptr;
+    }
+
+    std::vector<Character*> Team::getTeam() const {
+        return this->members;
+    }
+
+    Character* Team::getLeader() const {
+        return this->leader;
     }
 }

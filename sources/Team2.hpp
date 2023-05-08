@@ -9,5 +9,6 @@ using namespace ariel;
 class Team2 : protected Team {
     public:
         void attack(Team*);
+        void print();
 };
 #endif

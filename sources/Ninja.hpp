@@ -6,22 +6,40 @@ using namespace std;
 
 
 class Ninja : public Character {
-    protected:
-        int _speed;
-
     public:
         // Constructors
-        Ninja();
-       
-        Ninja(string, Point);
+        // Ninja();
+        // Ninja(string, Point);
         Ninja(const string&, Point&, int, int);
-        Ninja(const Ninja& character);
-        Ninja(Character* character);
-        Ninja* operator->();
+        // Ninja(Ninja& character);
+        // Ninja(Ninja&& character) noexcept;
+        // Ninja* operator->();
+        // Ninja& operator=(const Ninja&);
+        // Ninja& operator=(Ninja&&) noexcept;
 
         // Functions
-        void move(Character *enemy);
-        void slash(Character *enemy);
+        virtual void move(Character *enemy);
+        virtual void slash(Character *enemy);
         string print();
+
+        int _speed;
+};
+
+class YountNinja : public Ninja {
+    public:
+        // YountNinja();
+        YountNinja(const string& name, Point possition);
+};
+
+class TrainedNinja : public Ninja {
+    public:
+        //TrainedNinja();
+        TrainedNinja(const string& name, Point possition);
+};
+
+class OldNinja : public Ninja {
+    public:
+        //OldNinja();
+        OldNinja(const string& name, Point possition);
 };
 #endif

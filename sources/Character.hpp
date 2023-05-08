@@ -1,5 +1,6 @@
 #ifndef CHARACTER_HPP
 #define CHARACTER_HPP
+#include <iostream>
 #include <string>
 #include "Point.hpp"
 using namespace std;
@@ -7,12 +8,15 @@ using namespace std;
 class Character{
     public:
         // Constructors
-        Character();
-        Character(string, Point, int); // check overflow of double? when reciev float??
-        virtual ~Character(){} // Destructor
-        Character(const Character& other);
-        Character(Character* other);
-        Character(Character&& other) noexcept; // Move constructor
+        // Character();
+        Character(string, Point, int);
+        virtual ~Character(); // Destructor
+        // Character(const Character& other);
+        // Character(Character* other);
+        // Character(Character&& other) noexcept; // Move constructor
+
+        // Character& operator=(const Character&);
+        // Character& operator=(Character&&) noexcept;
 
         // Variables
         Point _possition;
@@ -21,13 +25,16 @@ class Character{
         bool inTeam;
 
         // Functions
-        bool isAlive(); // Returns true if hit_points > 0
-        double distance(Character*);
-        void hit(int damage); // Subtracts the damge value from hit_points
+        virtual bool isAlive(); 
+        virtual double distance(Character*);
+        virtual void hit(int damage); 
+        virtual string print() = 0;
+        
+        // Getters & Setters
         string getName();
-        Point getLocation();
-        string print();
+        Point& getLocation();
         int getHitPoints();
+        bool getInTeam();
         void setInTeam(bool);
 };
 #endif

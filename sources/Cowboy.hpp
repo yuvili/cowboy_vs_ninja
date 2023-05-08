@@ -10,10 +10,10 @@ class Cowboy : public Character {
 
     public:
         // Constructors
-        Cowboy();
+        //Cowboy();
         Cowboy(string, Point);
-        Cowboy(Cowboy* character);
-        Cowboy* operator->();
+        // Cowboy(Cowboy* character);
+        // Cowboy* operator->();
 
         // Functions
         void shoot(Character *enemy); // If cowbow not dead and boolets_count>0 it shoot the enamy and subtract 10 hit_point from the enamy and boolets_count--

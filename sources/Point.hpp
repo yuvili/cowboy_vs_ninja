@@ -1,5 +1,7 @@
 #ifndef POINT_HPP
 #define POINT_HPP
+#include <string>
+using namespace std;
 
 class Point{
     private:
@@ -13,9 +15,10 @@ class Point{
         Point(Point&& other) noexcept; // Move constructor
 
         Point& operator=(const Point&);
+        friend std::ostream &operator<<(std::ostream& ost, const Point& point);
 
         double distance(Point&);
-        void print();
+        string print();
         Point moveTowards(Point&, Point&, double);
         double getX();
         double getY();

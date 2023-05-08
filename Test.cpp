@@ -49,6 +49,10 @@ TEST_CASE("Point moveTowards calculation") {
         CHECK(movedPoint.getX() == doctest::Approx(5.0));
         CHECK(movedPoint.getY() == doctest::Approx(4.0));
     }
+
+    SUBCASE("Move negative distance throws error") {
+        CHECK_THROWS(p2.moveTowards(p2, target, -2.0));
+    }
 }
 
 TEST_CASE("Point distance calculation") {
@@ -88,14 +92,14 @@ TEST_CASE("Cowboy initialization") {
         CHECK(cowboy2->getName() == "Hermione Granger");
     } 
 
-    SUBCASE("Check Cowboy default constructor") {
-        Cowboy cowboy2;
-        CHECK(cowboy2.getName() == "");
-        CHECK(cowboy2->getHitPoints() == 110);
-        CHECK(cowboy2->getName() == "");
-        CHECK(cowboy2->getLocation().getX() == doctest::Approx(0));
-        CHECK(cowboy2->getLocation().getY() == doctest::Approx(0));
-    }  
+    // SUBCASE("Check Cowboy default constructor") {
+    //     Cowboy cowboy2;
+    //     CHECK(cowboy2.getName() == "");
+    //     CHECK(cowboy2->getHitPoints() == 110);
+    //     CHECK(cowboy2->getName() == "");
+    //     CHECK(cowboy2->getLocation().getX() == doctest::Approx(0));
+    //     CHECK(cowboy2->getLocation().getY() == doctest::Approx(0));
+    // }  
 }
 
 TEST_CASE("Cowboy isAlive") {
@@ -111,7 +115,7 @@ TEST_CASE("Cowboy isAlive") {
     SUBCASE("Dead cowboy") {
         cowboy.hit(110);
         CHECK(cowboy.getHitPoints() == 0);
-        CHECK(cowboy.isAlive() == false);
+        CHECK_FALSE(cowboy.isAlive());
     }
 }
 
@@ -172,22 +176,53 @@ TEST_CASE("Cowboy shoot") {
     }
 
      SUBCASE("Shoot self") {
-        cowboy1->shoot(cowboy1);
-        CHECK(cowboy1->getHitPoints() == 110); // No damage as shooting self
+        CHECK_THROWS(cowboy1->shoot(cowboy1));
     }
 
-    SUBCASE("Shoot null enemy") {
-        Cowboy* enemy = nullptr;
-        CHECK_NOTHROW(cowboy1->shoot(enemy)); // No damage as shooting null enemy
+    SUBCASE("Cowboy shoots when dead or when enemy is dead") {
+        cowboy1->shoot(cowboy2);
+        cowboy1->shoot(cowboy2);
+        cowboy1->shoot(cowboy2);
+        cowboy1->shoot(cowboy2);
+        cowboy1->shoot(cowboy2);
+        cowboy1->shoot(cowboy2);
+        cowboy1->reload();
+        cowboy1->shoot(cowboy2);
+        cowboy1->shoot(cowboy2);
+        cowboy1->shoot(cowboy2);
+        cowboy1->shoot(cowboy2);
+        cowboy1->shoot(cowboy2);
+        CHECK_FALSE(cowboy2->isAlive());
+        CHECK_THROWS(cowboy1->shoot(cowboy2));
+        CHECK_THROWS(cowboy2->shoot(cowboy1));
     }
 }
 
 TEST_CASE("Cowboy reload") {
     Point p(0.0, 0.0);
-    Cowboy cowboy("Harry", p);
+    Cowboy cowboy1("Harry", p);
+    Cowboy *cowboy2 = new Cowboy("Sirius", p);
 
-    cowboy.reload();
-    CHECK(cowboy.hasBullets() == true);
+    cowboy1.shoot(cowboy2);
+    cowboy1.shoot(cowboy2);
+    cowboy1.shoot(cowboy2);
+    cowboy1.shoot(cowboy2);
+    cowboy1.shoot(cowboy2);
+    cowboy1.shoot(cowboy2);
+    CHECK_FALSE(cowboy1.hasBullets());
+
+    cowboy1.reload();
+    CHECK(cowboy1.hasBullets());
+
+    SUBCASE("Reload when cowboy is dead") {
+        cowboy1.shoot(cowboy2);
+        cowboy1.shoot(cowboy2);
+        cowboy1.shoot(cowboy2);
+        cowboy1.shoot(cowboy2);
+        cowboy1.shoot(cowboy2);
+        CHECK_FALSE(cowboy2->isAlive());
+        CHECK_THROWS(cowboy2->reload());
+    }
 }
 
 TEST_CASE("Ninja initialization") {
@@ -239,28 +274,28 @@ TEST_CASE("Ninja initialization") {
         CHECK(oldNinjaNone->getName() == "Albus Dumbledore");
     } 
 
-    SUBCASE("Check Ninja default constructor") {
-        YountNinja youngNinja;
-        CHECK(youngNinja->isAlive() == true);
-        CHECK(youngNinja->getHitPoints() == 100);
-        CHECK(youngNinja->getName() == "");
-        CHECK(youngNinja->getLocation().getX() == doctest::Approx(0));
-        CHECK(youngNinja->getLocation().getY() == doctest::Approx(0));
+    // SUBCASE("Check Ninja default constructor") {
+    //     YountNinja youngNinja;
+    //     CHECK(youngNinja->isAlive() == true);
+    //     CHECK(youngNinja->getHitPoints() == 100);
+    //     CHECK(youngNinja->getName() == "");
+    //     CHECK(youngNinja->getLocation().getX() == doctest::Approx(0));
+    //     CHECK(youngNinja->getLocation().getY() == doctest::Approx(0));
         
-        TrainedNinja trainedNinja;
-        CHECK(trainedNinja->isAlive() == true);
-        CHECK(trainedNinja->getHitPoints() == 120);
-        CHECK(trainedNinja->getName() == "");
-        CHECK(trainedNinja->getLocation().getX() == doctest::Approx(0));
-        CHECK(trainedNinja->getLocation().getY() == doctest::Approx(0));
+    //     TrainedNinja trainedNinja;
+    //     CHECK(trainedNinja->isAlive() == true);
+    //     CHECK(trainedNinja->getHitPoints() == 120);
+    //     CHECK(trainedNinja->getName() == "");
+    //     CHECK(trainedNinja->getLocation().getX() == doctest::Approx(0));
+    //     CHECK(trainedNinja->getLocation().getY() == doctest::Approx(0));
 
-        OldNinja oldNinja;
-        CHECK(oldNinja->isAlive() == true);
-        CHECK(oldNinja->getHitPoints() == 150);
-        CHECK(oldNinja->getName() == "");
-        CHECK(oldNinja->getLocation().getX() == doctest::Approx(0));
-        CHECK(oldNinja->getLocation().getY() == doctest::Approx(0));
-    }  
+    //     OldNinja oldNinja;
+    //     CHECK(oldNinja->isAlive() == true);
+    //     CHECK(oldNinja->getHitPoints() == 150);
+    //     CHECK(oldNinja->getName() == "");
+    //     CHECK(oldNinja->getLocation().getX() == doctest::Approx(0));
+    //     CHECK(oldNinja->getLocation().getY() == doctest::Approx(0));
+    // }  
 }
 
 TEST_CASE("Ninja isAlive") {
@@ -352,93 +387,85 @@ TEST_CASE("Ninja slash") {
     }
 
      SUBCASE("Slash self") {
-        youngNinja->slash(youngNinja);
-        CHECK(youngNinja->getHitPoints() == 100); // No damage as slashing self
-
-        trainedNinja->slash(trainedNinja);
-        CHECK(trainedNinja->getHitPoints() == 120); // No damage as slashing self
-
-        oldNinja->slash(oldNinja);
-        CHECK(oldNinja->getHitPoints() == 150); // No damage as slashing self
+        CHECK_THROWS(youngNinja->slash(youngNinja));
+        CHECK_THROWS(trainedNinja->slash(trainedNinja));
+        CHECK_THROWS(oldNinja->slash(oldNinja));
     }
 
-    // SUBCASE("Slash null enemy") {
-    //     OldNinja* enemy = nullptr;
-    //     CHECK_NOTHROW(youngNinja->slash(enemy)); 
-    //     CHECK_NOTHROW(trainedNinja->slash(enemy));
-    //     CHECK_NOTHROW(oldNinja->slash(enemy));
-    // }
+    SUBCASE("Ninja slashes when dead or when enemy is dead") {
+        trainedNinja->slash(youngNinja);
+        trainedNinja->slash(youngNinja);
+        trainedNinja->slash(youngNinja);
+        trainedNinja->slash(youngNinja);
+        trainedNinja->slash(youngNinja);
+        trainedNinja->slash(youngNinja);
+        trainedNinja->slash(youngNinja);
+        trainedNinja->slash(youngNinja);
+        CHECK_FALSE(youngNinja->isAlive());
+        CHECK_THROWS(trainedNinja->slash(youngNinja));
+        CHECK_THROWS(youngNinja->slash(trainedNinja));
+    }
 }
 
 TEST_CASE("Team initialization") {
-    Cowboy cowboy1("Harry", Point(1.0, 1.0));
-    Cowboy cowboy2("Ron", Point(2.125, 2.5));
-    Cowboy cowboy3("Neville", Point(1.0, 1.3));
-    Cowboy cowboy4("Lavender", Point(2.25, 2.0));
-    Cowboy cowboy5("Fred", Point(8.2, 9.1));
-    YountNinja ninja1("Hermione", Point(1.22, 3.0));
-    TrainedNinja ninja2("Luna", Point(1.5, 0.25));
-    YountNinja ninja3("Ginny", Point(4.25, 9.1));
-    TrainedNinja ninja4("Seamus", Point(3.0, 3.0));
+    Cowboy* cowboy1 = new Cowboy("Harry", Point(1.0, 1.0));
+    Cowboy* cowboy2 = new Cowboy("Ron", Point(2.125, 2.5));
+    Cowboy* cowboy3 = new Cowboy("Neville", Point(1.0, 1.3));
+    Cowboy* cowboy4 = new Cowboy("Lavender", Point(2.25, 2.0));
+    Cowboy* cowboy5 = new Cowboy("Fred", Point(8.2, 9.1));
+    YountNinja* ninja1 = new YountNinja("Hermione", Point(1.22, 3.0));
+    TrainedNinja* ninja2 = new TrainedNinja("Luna", Point(1.5, 0.25));
+    YountNinja* ninja3 = new YountNinja("Ginny", Point(4.25, 9.1));
+    TrainedNinja* ninja4 = new TrainedNinja("Seamus", Point(3.0, 3.0));
 
-    Team team1(&cowboy1);
+    Team team1(cowboy1);
     CHECK(team1.stillAlive() == 1);
-    SUBCASE("Create team") {
-        CHECK_NOTHROW(team1.add(&cowboy2));
-        CHECK_NOTHROW(team1.add(&ninja1));
-        CHECK_NOTHROW(team1.add(&ninja2));
-        CHECK_NOTHROW(team1.add(&cowboy3));
-        CHECK_NOTHROW(team1.add(&cowboy4));
-        CHECK_NOTHROW(team1.add(&ninja3));
-        CHECK_NOTHROW(team1.add(new OldNinja("Sirius", Point(7.05, 3.5))));
-        CHECK_NOTHROW(team1.add(&cowboy5));
-        CHECK_NOTHROW(team1.add(new Cowboy("George", Point(0.0, 2.125))));
 
-        CHECK(team1.stillAlive() == 10);
-    }
+    CHECK_NOTHROW(team1.add(cowboy2));
+    CHECK_NOTHROW(team1.add(ninja1));
+    CHECK_NOTHROW(team1.add(ninja2));
+    CHECK_NOTHROW(team1.add(cowboy3));
+    CHECK_NOTHROW(team1.add(cowboy4));
+    CHECK_NOTHROW(team1.add(ninja3));
+    CHECK_NOTHROW(team1.add(new OldNinja("Sirius", Point(7.05, 3.5))));
+    CHECK_NOTHROW(team1.add(cowboy5));
+    CHECK_NOTHROW(team1.add(new Cowboy("George", Point(0.0, 2.125))));
+
+    CHECK(team1.stillAlive() == 10);
     
-    SUBCASE("Adding too many characters"){
-        team1.add(&cowboy2);
-        team1.add(&ninja1);
-        team1.add(&ninja2);
-        team1.add(&cowboy3);
-        team1.add(&cowboy4);
-        team1.add(&ninja3);
-        team1.add(new OldNinja("Sirius", Point(7.05, 3.5)));
-        team1.add(&cowboy5);
-        team1.add(new Cowboy("George", Point(0.0, 2.125)));
-        CHECK_THROWS_AS(team1.add(&ninja4), std::runtime_error);
-    }
-
-    SUBCASE("Get Leader"){
-        CHECK(team1.getLeader().getName() == "Harry");
-    }
+    //Adding too many characters
+    CHECK_THROWS(team1.add(ninja4));
+    
+    //Adding member of another team
+    TrainedNinja* ninja21 = new TrainedNinja("Seamus", Point(3.0, 3.0));
+    Team team2(ninja21);
+    CHECK_THROWS(team1.add(ninja21));
 }
 
 TEST_CASE("Team attack") {
     // Creat team1
-    Cowboy cowboy1("Harry", Point(1.0, 1.0));
-    Cowboy cowboy2("Ron", Point(1.25, 3.0));
-    TrainedNinja ninja1("Hermione", Point(1.25, 3.0));
-    YountNinja ninja2("Ginny", Point(4.25, 9.1));
-    OldNinja ninja3("Neville", Point(7.05, 3.5));
+    Cowboy* cowboy1 = new Cowboy("Harry", Point(1.0, 1.0));
+    Cowboy* cowboy2 = new Cowboy("Ron", Point(2.125, 2.5));
+    TrainedNinja* ninja1 = new TrainedNinja("Hermione", Point(1.22, 3.0));
+    YountNinja* ninja2 = new YountNinja("Ginny", Point(4.25, 9.1));
+    OldNinja* ninja3 = new OldNinja("Neville", Point(7.05, 3.5));
 
-    Team team1(&cowboy1);
-    team1.add(&cowboy2);
-    team1.add(&ninja1);
-    team1.add(&ninja2);
-    team1.add(&ninja3);
+    Team team1(cowboy1);
+    team1.add(cowboy2);
+    team1.add(ninja1);
+    team1.add(ninja2);
+    team1.add(ninja3);
 
     // Create team 2
-    Cowboy cowboy12("Draco", Point(1.5, 7.0));
-    Cowboy cowboy22("Snape", Point(1.5, 1.125));
-    OldNinja ninja12("Bellatrix", Point(1.5, 1.125));
-    YountNinja ninja22("Lucius", Point(1.5, 0.75));
+    Cowboy* cowboy12 = new Cowboy("Draco", Point(1.5, 7.0));
+    Cowboy* cowboy22 = new Cowboy("Snape", Point(1.5, 1.125));
+    OldNinja* ninja12 = new OldNinja("Bellatrix", Point(1.5, 1.125));
+    YountNinja* ninja22 = new YountNinja("Lucius", Point(1.5, 0.75));
 
-    Team team2(&cowboy12);
-    team2.add(&cowboy22);
-    team2.add(&ninja12);
-    team2.add(&ninja22);
+    Team team2(cowboy12);
+    team2.add(cowboy22);
+    team2.add(ninja12);
+    team2.add(ninja22);
 
     SUBCASE("Attacking with living members") {
         // Attack team2 with team1
@@ -448,7 +475,7 @@ TEST_CASE("Team attack") {
         CHECK(team1.stillAlive() == 5);
         CHECK(team2.stillAlive() == 4);
 
-        CHECK(cowboy22.getHitPoints() == 90); // cowboy22 is the closest alive player to team1 leader 
+        CHECK(cowboy22->getHitPoints() == 90); // cowboy22 is the closest alive player to team1 leader 
 
         team1.attack(&team2);
         team1.attack(&team2);
@@ -460,10 +487,15 @@ TEST_CASE("Team attack") {
         CHECK(team2.stillAlive() == 3);
 
         // cowboy22 is the closest alive player to team1 leader 
-        CHECK(cowboy22.getHitPoints() == 0);
-        CHECK_FALSE(cowboy22.isAlive()); 
+        CHECK(cowboy22->getHitPoints() == 0);
+        CHECK_FALSE(cowboy22->isAlive()); 
 
         team1.attack(&team2);
-        CHECK(ninja12.getHitPoints() == 140); // ninja12 is the closest alive player to team1 leader 
+        CHECK(ninja12->getHitPoints() == 140); // ninja12 is the closest alive player to team1 leader 
+    }
+
+    SUBCASE("Team attack self") {
+        CHECK_THROWS(team1.attack(&team1));
     }
 }
+
