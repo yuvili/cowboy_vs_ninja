@@ -4,19 +4,10 @@
 using namespace std;
 #include "Cowboy.hpp"
 
-// Constructors
-// Cowboy::Cowboy() : Character() {
-//     hit_points = 110;
-//     bullets_count = 6;
-// }
-
+// Constructor
 Cowboy::Cowboy(string name, Point possition) : Character(name, possition, 110) {
     bullets_count = 6;
 }
-
-// Cowboy::Cowboy(Cowboy* character) : Cowboy(character->getName(), character->getLocation()){}
-
-// Cowboy* Cowboy::operator->() {return this;}
 
 // Functions
 void Cowboy::shoot(Character *enemy){
@@ -53,5 +44,5 @@ string Cowboy::print() {
     if(isAlive()){
         return "(C) Name: " + _name + ", Position: " + _possition.print() + ", Hit Points: " + to_string(hit_points);
     }
-    return "(C) (Name: " + _name + "), Position: " + _possition.print();
+    return "(C) Name: (" + _name + "), Position: " + _possition.print();
 }

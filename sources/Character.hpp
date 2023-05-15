@@ -8,15 +8,15 @@ using namespace std;
 class Character{
     public:
         // Constructors
-        // Character();
+        Character();
         Character(string, Point, int);
         virtual ~Character(); // Destructor
-        // Character(const Character& other);
-        // Character(Character* other);
-        // Character(Character&& other) noexcept; // Move constructor
+        Character(const Character& other);
+        Character(Character* other);
+        Character(Character&& other) noexcept; // Move constructor
 
-        // Character& operator=(const Character&);
-        // Character& operator=(Character&&) noexcept;
+        Character& operator=(const Character&);
+        Character& operator=(Character&&) noexcept;
 
         // Variables
         Point _possition;

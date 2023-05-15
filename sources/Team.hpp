@@ -10,28 +10,56 @@ using namespace std;
 
 
 namespace ariel{
-class Team{
-    private:
-        Character* leader;
-        std::vector<Character*> members;
+    class Team {
+        public:
+            Character* leader;
+            std::vector<Character*> members;
 
-    public:
-        Team(Character* leader);
-        virtual ~Team(); // Destructor
-        Team(const Team& other); // Copy constructor
-        Team(Team&& other) noexcept; // Move constructor
+            Team(Character* leader);
+            virtual ~Team(); // Destructor
+            Team(const Team& other); // Copy constructor
+            Team(Team&& other) noexcept; // Move constructor
 
-        virtual void add(Character*);
-        void attack(Team*);
-        int stillAlive();
-        void print();
+            Team& operator=(const Team&);
+            Team& operator=(Team&&) noexcept;
 
-        void chooseLeader();
-        Character* getTarget(Team* enemy);
+            virtual void add(Character*);
+            void attack(Team*);
+            int stillAlive();
+            void print();
 
-        // Getters
-        std::vector<Character*> getTeam() const;
-        Character* getLeader() const;
-};
+            void chooseLeader();
+            Character* getTarget(Team* enemy);
+
+            // Getters
+            std::vector<Character*> getTeam() const;
+            Character* getLeader() const;
+    };
+
+    class Team2 : public Team {
+        public:
+            Team2(Character* leader);
+
+            void add(Character* member) override;
+            int stillAlive();
+            void attack(Team*);
+            void print();
+
+            std::vector<Character*> getTeam() const;
+            Character* getLeader() const;
+    };
+
+    class SmartTeam : public Team {
+        public:
+            SmartTeam(Character* leader);
+
+            void add(Character* member) override;
+            int stillAlive();
+            void attack(Team*);
+            void print();
+
+            std::vector<Character*> getTeam() const;
+            Character* getLeader() const;
+    };
 };
 #endif

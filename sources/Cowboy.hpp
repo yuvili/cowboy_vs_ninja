@@ -19,6 +19,6 @@ class Cowboy : public Character {
         void shoot(Character *enemy); // If cowbow not dead and boolets_count>0 it shoot the enamy and subtract 10 hit_point from the enamy and boolets_count--
         bool hasBullets();
         void reload(); // reloads 6 new boolets
-        string print();
+        string print() override;
 };
 #endif

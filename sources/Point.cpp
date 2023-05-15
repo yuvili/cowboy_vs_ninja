@@ -20,6 +20,12 @@ Point& Point::operator=(const Point& other) {
     return *this;
 }
 
+Point& Point::operator=(Point&& other) noexcept{
+    this->_x = other._x;
+    this->_y = other._y;
+    return *this;
+}
+
 std::ostream &operator<<(std::ostream& ost, const Point& point) {
     ost << "(" << point._x << "," << point._y << ")" << endl;
     return ost;

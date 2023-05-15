@@ -15,6 +15,8 @@ class Point{
         Point(Point&& other) noexcept; // Move constructor
 
         Point& operator=(const Point&);
+        Point& operator=(Point&&) noexcept;
+
         friend std::ostream &operator<<(std::ostream& ost, const Point& point);
 
         double distance(Point&);
